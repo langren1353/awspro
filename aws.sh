@@ -17,10 +17,10 @@ fi
 beikong0_chushihua() {
   echo "开始安装依赖"
   echo "安装依赖"
-  yum install wget -y
+  yum install wget curl -y
   yum install epel-release -y
   yum install wget vnstat -y
-  apt-get install wget -y
+  apt-get install wget curl -y
   apt-get install epel-release -y
   apt-get install vnstat -y
   service vnstat start
@@ -33,14 +33,11 @@ beikong0_chushihua() {
   wget https://raw.githubusercontent.com/langren1353/awspro/master/awsoff.sh -O /root/.awsll/awsoff.sh
   chmod +x /root/.awsll/awsoff.sh
 
-  read -p "是否下载1T版本脚本[y/N]" down_files_1
-  if [[ "$down_files_1" =~ ^[yY]$ ]]; then
-    echo "正在下载1T版脚本"
-    wget https://raw.githubusercontent.com/langren1353/awspro/master/aws1024.py -O /root/.awsll/aws1024.py
-    chmod +x /root/.awsll/aws1024.py
-    nohup python /root/.awsll/aws1024.py >>/dev/null 2>&1 &
+  echo "正在下载配置脚本"
+  wget https://raw.githubusercontent.com/langren1353/awspro/master/aws1024.py -O /root/.awsll/aws1024.py
+  chmod +x /root/.awsll/aws1024.py
+  nohup python /root/.awsll/aws1024.py >>/dev/null 2>&1 &
 
-  fi
   echo "正在添加定时任务"
     crontab -l >"$file_1/crontab.bak"
     sed -i "/vnstat -u -i eth0/d" "$file_1/crontab.bak"
@@ -54,6 +51,12 @@ beikong0_chushihua() {
   echo "正在添加自启任务"
     wget https://raw.githubusercontent.com/langren1353/awspro/master/aws1024-zq.sh -O /root/.awsll/aws1024-zq.sh
     chmod +x /root/.awsll/aws1024-zq.sh
+    
+    if [ ! -f /etc/rc.d/rc.local ] 
+    then 
+        mkdir -p /etc/rc.d/
+        cd /etc/rc.d/ && touch rc.local
+    fi
     chmod +x /etc/rc.d/rc.local
     echo "/root/.awsll/aws1024-zq.sh >/root/.awsll/aws1024.py.log 2>&1" >>/etc/rc.d/rc.local
   echo "正在下载管理脚本"
@@ -62,6 +65,9 @@ beikong0_chushihua() {
   echo "安装完成，请输入 aws 管理流量统计"
 }
 
-beikong0_chushihua
-echo "当前配置为不限制流量方式，请在管理脚本中进行配置"
+read -p "是否开始安装[y/N]" down_files_1
+if [[ "$down_files_1" =~ ^[yY]$ ]]; then
+  beikong0_chushihua
+  echo "当前配置为不限制流量方式，请在管理脚本中进行配置"
+fi
 

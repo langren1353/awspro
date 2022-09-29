@@ -57,15 +57,15 @@ beikong9_chushihua(){
 }
 setting_input() {
   read -p " 入 口流量限制(GB)-请输入数字：" inputLimit
-  sed -i "s/limit_in = \d+/limit_in = $inputLimit/g" /root/.awsll/aws1024.py
+  sed -i "s@limit_in = .*@limit_in = $inputLimit@g" /root/.awsll/aws1024.py
 }
 settting_output() {
   read -p " 出 口流量限制(GB)-请输入数字：" outputLimit
-  sed -i "s/limit_out = \d+/limit_out = $outputLimit/g" /root/.awsll/aws1024.py
+  sed -i "s@limit_out = .*@limit_out = $outputLimit@g" /root/.awsll/aws1024.py
 }
 settting_inout_total() {
   read -p " 总流量限制(GB)-请输入数字：" totalLimit
-  sed -i "s/limit_total = \d+/limit_total = $totalLimit/g" /root/.awsll/aws1024.py
+  sed -i "s@limit_total = .*@limit_total = $totalLimit@g" /root/.awsll/aws1024.py
 }
 
 echo && echo -e " AWS流量阈值副脚本
