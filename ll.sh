@@ -4,24 +4,22 @@
 #
 # Copyright (c) 2020.
 
-
-
 beikong1_chushihua(){
     echo "查看当天流量"
     vnstat -d
-    }
+}
 beikong2_chushihua(){
     echo "查看本周流量"
     vnstat -w
-    }
+}
 beikong3_chushihua(){
     echo "查看当月流量"
     vnstat -m
-    }
+}
 beikong4_chushihua(){
     echo "刷新统计流量"
     vnstat -u -i eth0
-    }
+}
 beikong5_chushihua(){
     echo "清空统计流量"
     bash /root/.awsll/vnstat.sh
@@ -30,34 +28,45 @@ beikong5_chushihua(){
 		echo "正在重启"
         reboot
 	fi
-    }
+}
 beikong6_chushihua(){
     echo "查看流量监控进程"
     ps aux|grep /root/.awsll/
-    }
+}
 beikong7_chushihua(){
     echo "开启秒级更新"
-    wget https://raw.githubusercontent.com/54665/awspro/master/second.sh -O /root/.awsll/second.sh
-	wget https://raw.githubusercontent.com/54665/awspro/master/refresh.sh -O /root/.awsll/refresh.sh
-	chmod +x /root/.awsll/second.sh
-	chmod +x /root/.awsll/refresh.sh
-	chmod +x /etc/rc.d/rc.local
-	nohup /root/.awsll/second.sh >> /dev/null 2>&1 &
-	echo "/root/.awsll/second.sh >/root/.awsll/second.sh.log 2>&1" >> /etc/rc.d/rc.local
-    }
+    wget https://raw.githubusercontent.com/langren1353/awspro/master/second.sh -O /root/.awsll/second.sh
+	  wget https://raw.githubusercontent.com/langren1353/awspro/master/refresh.sh -O /root/.awsll/refresh.sh
+	  chmod +x /root/.awsll/second.sh
+	  chmod +x /root/.awsll/refresh.sh
+	  chmod +x /etc/rc.d/rc.local
+	  nohup /root/.awsll/second.sh >> /dev/null 2>&1 &
+	  echo "/root/.awsll/second.sh >/root/.awsll/second.sh.log 2>&1" >> /etc/rc.d/rc.local
+}
 beikong8_chushihua(){
     echo "更新管理脚本"
-	rm -rf /usr/bin/aws
-    curl -o /usr/bin/aws -Ls https://raw.githubusercontent.com/54665/awspro/master/ll.sh
-	chmod +x /usr/bin/aws
-    }
+	  rm -rf /usr/bin/aws
+    curl -o /usr/bin/aws -Ls https://raw.githubusercontent.com/langren1353/awspro/master/ll.sh
+	  chmod +x /usr/bin/aws
+}
 beikong9_chushihua(){
     echo "卸载管理脚本"
-	wget https://raw.githubusercontent.com/54665/awspro/master/unaws.sh
+	  wget https://raw.githubusercontent.com/langren1353/awspro/master/unaws.sh
     chmod +x unaws.sh
-	bash unaws.sh
-    }
-
+	  bash unaws.sh
+}
+setting_input() {
+  read -p " 入 口流量限制(GB)-请输入数字：" inputLimit
+  sed -i "s/limit_in = \d+/limit_in = $inputLimit/g" /root/.awsll/aws1024.py
+}
+settting_output() {
+  read -p " 出 口流量限制(GB)-请输入数字：" outputLimit
+  sed -i "s/limit_out = \d+/limit_out = $outputLimit/g" /root/.awsll/aws1024.py
+}
+settting_inout_total() {
+  read -p " 总流量限制(GB)-请输入数字：" totalLimit
+  sed -i "s/limit_total = \d+/limit_total = $totalLimit/g" /root/.awsll/aws1024.py
+}
 
 echo && echo -e " AWS流量阈值副脚本
 
@@ -69,6 +78,9 @@ echo && echo -e " AWS流量阈值副脚本
  ${Green_font_prefix}6.${Font_color_suffix} 查看监控进程
  ${Green_font_prefix}7.${Font_color_suffix} 开启秒级更新
  ${Green_font_prefix}8.${Font_color_suffix} 更新管理脚本
+ ${Green_font_prefix}22.${Font_color_suffix} 设置入口流量限制
+ ${Green_font_prefix}33.${Font_color_suffix} 设置出口流量限制
+ ${Green_font_prefix}33.${Font_color_suffix} 设置总流量限制
  ${Green_font_prefix}9.${Font_color_suffix} 卸载管理脚本" && echo
 stty erase '^H' && read -p " 请输入数字 [1-9]:" num
 case "$num" in
@@ -95,6 +107,12 @@ case "$num" in
 	;;
 	8)
 	beikong8_chushihua
+	;;
+	22)
+	setting_input
+	;;
+	33)
+	settting_output
 	;;
 	9)
 	beikong8_chushihua
